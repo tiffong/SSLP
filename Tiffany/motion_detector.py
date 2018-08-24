@@ -1,7 +1,3 @@
-# USAGE
-# python motion_detector.py
-# python motion_detector.py --video videos/example_01.mp4
-
 # import the necessary packages
 from imutils.video import VideoStream
 import argparse
@@ -12,29 +8,29 @@ import cv2
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video", help="path to the video file")
-ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
+ap.add_argument("-v", "--video", help="path to the video file") #path to prerecorded vid OR webcam
+ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size") #min amt of change needed to be considered actual motion
 args = vars(ap.parse_args())
 
-# if the video argument is None, then we are reading from webcam
+# if the video argument is None, then we are reading from WEBCAM
 if args.get("video", None) is None:
 	vs = VideoStream(src=0).start()
 	time.sleep(2.0)
 
-# otherwise, we are reading from a video file
+# otherwise, we are reading from a video, creates a pointer 
 else:
 	vs = cv2.VideoCapture(args["video"])
 
-# initialize the first frame in the video stream
+# initialize the first frame in the video stream #stores the first frame of the video/webcam
 firstFrame = None
-
+#WE ARE ASSUMING THE FIRST FRAME IS DEFAULT - SO NO MOTION OR PEOPLE, BIG ASSUMPTION, BUT NECESSARY FOR SIMPLICITY
 # loop over the frames of the video
 while True:
 	# grab the current frame and initialize the occupied/unoccupied
 	# text
 	frame = vs.read()
 	frame = frame if args.get("video", None) is None else frame[1]
-	text = "Unoccupied"
+	text = "Unoccupied" #can be updated based on if someone is in the room or not
 
 	# if the frame could not be grabbed, then we have reached the end
 	# of the video
@@ -44,13 +40,13 @@ while True:
 	# resize the frame, convert it to grayscale, and blur it
 	frame = imutils.resize(frame, width=500)
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-	gray = cv2.GaussianBlur(gray, (21, 21), 0)
+	gray = cv2.GaussianBlur(gray, (21, 21), 0) #smooths out high frequency noise that would throw detection algorithm off 
 
 	# if the first frame is None, initialize it
 	if firstFrame is None:
 		firstFrame = gray
 		continue
-
+#FROM HERE ON IS BASIC MOTION DETECTING AND TRACKING CODE:
 	# compute the absolute difference between the current frame and
 	# first frame
 	frameDelta = cv2.absdiff(firstFrame, gray)

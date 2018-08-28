@@ -12,10 +12,16 @@ GPIO.setup(15,GPIO.OUT) # M1
 ser = serial.Serial('/dev/ttyUSB0', 9600)
 
 try:
-
-    ser.write(b'3')
-    ser.write(b'5')
-    ser.write(b'7')
+    int r = 1;
+    void setup(){
+        Serial.begin(9600);
+    }
+    void loop(){
+        if(Serial.available()){         //From RPi to Arduino
+            r = r * (Serial.read() - '0');  //conveting the value of chars to integer
+            Serial.println(r);
+        }
+    }
     GPIO.cleanup()
     ser.close()
 
@@ -23,4 +29,6 @@ try:
 except KeyboardInterrupt:
         GPIO.cleanup()
         ser.close()
+
+
 

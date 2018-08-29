@@ -142,15 +142,15 @@ if camera_type == 'picamera':
             [detection_boxes, detection_scores, detection_classes, num_detections],
             feed_dict={image_tensor: frame_expanded})
         
-        threshold=0.1
-        # Print detected objects and scores
-        objects=[]
-        for idx,value in enumerate(classes[0]):
-            object_dict={}
-            if scores[0,idx]>threshold:
-                object_dict[(category_index.get(value)).get('name').encode('utf-8')]=scores[0,idx]
-                objects.append(object_dict)
-        print(objects)
+##        threshold=0.1
+##        # Print detected objects and scores
+##        objects=[]
+##        for idx,value in enumerate(classes[0]):
+##            object_dict={}
+##            if scores[0,idx]>threshold:
+##                object_dict[(category_index.get(value)).get('name').encode('utf-8')]=scores[0,idx]
+##                objects.append(object_dict)
+##        print(objects)
 
         # Draw the results of the detection (aka 'visulaize the results')
         vis_util.visualize_boxes_and_labels_on_image_array(

@@ -50,6 +50,7 @@ ser = serial.Serial(
     bytesize=serial.EIGHTBITS,
     timeout=1
 )
+ser.write(b"initializing...")
 
 # Set up camera constants
 IM_WIDTH = 1280
@@ -100,6 +101,7 @@ categories = label_map_util.convert_label_map_to_categories(label_map, max_num_c
 category_index = label_map_util.create_category_index(categories)
 
 print("loading Tensorflow model...")
+ser.write(b"loading Tensorflow model...")
 # Load the Tensorflow model into memory.
 detection_graph = tf.Graph()
 with detection_graph.as_default():
@@ -139,6 +141,7 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 # Picamera or USB webcam.
 # Initialize Picamera and grab reference to the raw capture
 print("setting up camera...")
+ser.write(b"setting up camera...")
 camera = PiCamera()
 camera.resolution = (IM_WIDTH,IM_HEIGHT)
 camera.framerate = 10
@@ -165,6 +168,7 @@ ser.write(msg)
 time0=time.time()
 
 print("beginning PIR scan...")
+ser.write(b"beginning PIR scan...")
 try:
     while True:
         # check PIR

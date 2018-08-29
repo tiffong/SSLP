@@ -29,6 +29,7 @@ import argparse
 import RPi.GPIO as GPIO
 import serial
 import sys
+import time
 
 # Set up GPIO
 GPIO.setmode(GPIO.BOARD)
@@ -182,7 +183,8 @@ try:
                 for idx,value in enumerate(classes[0]):
                     object_name=(category_index.get(value)).get('name')
                     if scores[0,idx]>threshold and object_name=='person':
-                        camera.capture('/home/pi/Desktop/saved-images/image%s.jpg' %counter, quality=6)
+                        #camera.capture('/home/pi/Desktop/saved-images/image%s.jpg' %counter, quality=6)
+                        camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'.jpg', quality=6)
                         print((category_index.get(value)).get('name'))
                         print(scores[0,idx])
                         msg=b'person found'
@@ -208,7 +210,7 @@ try:
                 time1 = (t2-t1)/freq
                 frame_rate_calc = 1/time1
 
-                if counter>1:
+                if counter>15:
                     break
 
                 rawCapture.truncate(0)
@@ -225,5 +227,6 @@ except:
     ser.close()
     cv2.destroyAllWindows()
     # restart program
-    cmd='python3 /home/pi/Desktop/SSLP/tensorflow/object_detection/panda.py'
-    ret=os.system(cmd)
+##    cmd='python3 /home/pi/Desktop/SSLP/tensorflow/object_detection/panda.py'
+##    print(cmd)
+##    ret=os.system(cmd)

@@ -35,9 +35,11 @@ import time
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(13,GPIO.OUT) # M0
 GPIO.setup(15,GPIO.OUT) # M1
+GPIO.setup(36,GPIO.OUT) # infrared light
 GPIO.setup(37,GPIO.IN,pull_up_down=GPIO.PUD_DOWN) # pir
 GPIO.output(13,GPIO.LOW)
 GPIO.output(15,GPIO.LOW)
+GPIO.output(36,GPIO.LOW)
 
 # Set up serial communication
 ser = serial.Serial(
@@ -144,7 +146,7 @@ rawCapture = PiRGBArray(camera, size=(IM_WIDTH,IM_HEIGHT))
 rawCapture.truncate(0)
 
 idx=0
-for frame1 in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+for frame1 in camera.capture_continuous(rawCapture, format="bgr", use_video_port=False):
     idx=idx+1
     frame = frame1.array
     frame.setflags(write=1)
@@ -156,13 +158,29 @@ for frame1 in camera.capture_continuous(rawCapture, format="bgr", use_video_port
         break
 rawCapture.truncate(0)
 
+# system status message
+msg=b'SYSTEM: NORMAL; STATUS: RUNNING'
+print(msg)
+ser.write(msg)
+time0=time.time()
+
 print("beginning PIR scan...")
 try:
     while True:
+        # check PIR
         pir_out=GPIO.input(37)
+        # send a message back confirming functionality after 30 min has passed.
+        time1=time.time()
+        time_lapsed=time1-time0
+        if time_lapsed>1800:
+            msg=b'SYSTEM: NORMAL; STATUS: RUNNING'
+            print(msg)
+            ser.write(msg)
+            time0=time1
         if pir_out == 1:
+            GPIO.output(36,GPIO.HIGH)
             counter=0
-            for frame1 in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):
+            for frame1 in camera.capture_continuous(rawCapture, format="bgr",use_video_port=False):
                 counter=counter+1
                 print(counter)
                 t1 = cv2.getTickCount()
@@ -177,7 +195,7 @@ try:
                 (boxes, scores, classes, num) = sess.run(
                     [detection_boxes, detection_scores, detection_classes, num_detections],
                     feed_dict={image_tensor: frame_expanded})
-                threshold = 0.1
+                threshold = 0.5
                 # Print detected objects and scores
                 objects=[]
                 for idx,value in enumerate(classes[0]):
@@ -209,11 +227,13 @@ try:
                 t2 = cv2.getTickCount()
                 time1 = (t2-t1)/freq
                 frame_rate_calc = 1/time1
+                
+                rawCapture.truncate(0)
 
                 if counter>15:
+                    # turn off infrared lighting
+                    GPIO.output(36,GPIO.LOW)
                     break
-
-                rawCapture.truncate(0)
 
 except KeyboardInterrupt: 
     camera.close()        
@@ -221,12 +241,13 @@ except KeyboardInterrupt:
     ser.close()
     cv2.destroyAllWindows()
     
-except:
+except Exception as e:
+    print(e)
     camera.close()        
     GPIO.cleanup()
     ser.close()
     cv2.destroyAllWindows()
-    # restart program
+##    # restart program
 ##    cmd='python3 /home/pi/Desktop/SSLP/tensorflow/object_detection/panda.py'
 ##    print(cmd)
 ##    ret=os.system(cmd)

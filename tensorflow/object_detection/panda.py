@@ -224,3 +224,6 @@ except:
     GPIO.cleanup()
     ser.close()
     cv2.destroyAllWindows()
+    # restart program
+    cmd='python3 /home/pi/Desktop/SSLP/tensorflow/object_detection/panda.py'
+    ret=os.system(cmd)

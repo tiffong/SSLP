@@ -177,7 +177,7 @@ try:
         time1=time.time()
         time_lapsed=time1-time0
         if time_lapsed>1800:
-            msg=b'SYSTEM: NORMAL; STATUS: RUNNING'
+            msg=b' SYSTEM: NORMAL; STATUS: RUNNING '
             print(msg)
             ser.write(msg)
             time0=time1
@@ -209,7 +209,7 @@ try:
                         camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'.jpg', quality=6)
                         print((category_index.get(value)).get('name'))
                         print(scores[0,idx])
-                        msg=b'person found'
+                        msg=b' person found '
                         print(msg)
                         ser.write(msg)
 

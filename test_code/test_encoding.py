@@ -29,7 +29,7 @@ try:
     #rs=reedsolo.RSCodec(12)
     #img_enc=rs.encode(img)
     
-    chunksize=128
+    chunksize=64
     numchunks=int(len(img_enc)/chunksize)
     ser.write(img_enc[0:chunksize])
     for i in range(0,numchunks):

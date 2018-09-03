@@ -23,6 +23,7 @@ ser = serial.Serial(
 )
 
 try:
+#read image into file as array   
     with open('image8.jpg','rb') as f:
         img=f.read()
     img_enc=base64.encodestring(img)

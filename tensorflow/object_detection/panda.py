@@ -162,13 +162,13 @@ for frame1 in camera.capture_continuous(rawCapture, format="bgr", use_video_port
 rawCapture.truncate(0)
 
 # system status message
-msg=b'SYSTEM: NORMAL; STATUS: RUNNING'
+msg=b' SYSTEM: NORMAL; STATUS: RUNNING '
 print(msg)
 ser.write(msg)
 time0=time.time()
 
 print("beginning PIR scan...")
-ser.write(b"beginning PIR scan...")
+ser.write(b" beginning PIR scan... ")
 try:
     while True:
         # check PIR
@@ -184,6 +184,7 @@ try:
         if pir_out == 1:
             GPIO.output(36,GPIO.HIGH)
             counter=0
+            rawCapture.truncate(0)
             for frame1 in camera.capture_continuous(rawCapture, format="bgr",use_video_port=False):
                 counter=counter+1
                 print(counter)
@@ -199,39 +200,39 @@ try:
                 (boxes, scores, classes, num) = sess.run(
                     [detection_boxes, detection_scores, detection_classes, num_detections],
                     feed_dict={image_tensor: frame_expanded})
-                threshold = 0.5
+                threshold = 0.1
                 # Print detected objects and scores
                 objects=[]
                 for idx,value in enumerate(classes[0]):
                     object_name=(category_index.get(value)).get('name')
                     if scores[0,idx]>threshold and object_name=='person':
                         #camera.capture('/home/pi/Desktop/saved-images/image%s.jpg' %counter, quality=6)
-                        camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'.jpg', quality=6)
+                        #camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'.jpg', quality=6)
                         print((category_index.get(value)).get('name'))
                         print(scores[0,idx])
                         msg=b' person found '
-                        print(msg)
+                        print('person found @ '+time.strftime("%y%m%d_%H%M%S"))
                         ser.write(msg)
 
-                # Draw the results of the detection (aka 'visulaize the results')
-                vis_util.visualize_boxes_and_labels_on_image_array(
-                    frame,
-                    np.squeeze(boxes),
-                    np.squeeze(classes).astype(np.int32),
-                    np.squeeze(scores),
-                    category_index,
-                    use_normalized_coordinates=True,
-                    line_thickness=8,
-                    min_score_thresh=0.40)
-                cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
-
-                # All the results have been drawn on the frame, so it's time to display it.
-                cv2.imshow('Object detector', frame)
+#                # Draw the results of the detection (aka 'visulaize the results')
+#                vis_util.visualize_boxes_and_labels_on_image_array(
+#                    frame,
+#                    np.squeeze(boxes),
+#                    np.squeeze(classes).astype(np.int32),
+#                    np.squeeze(scores),
+#                    category_index,
+#                    use_normalized_coordinates=True,
+#                    line_thickness=8,
+#                    min_score_thresh=0.40)
+#                cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
+#
+#                # All the results have been drawn on the frame, so it's time to display it.
+#                cv2.imshow('Object detector', frame)
 
                 t2 = cv2.getTickCount()
                 time1 = (t2-t1)/freq
                 frame_rate_calc = 1/time1
-                
+
                 rawCapture.truncate(0)
 
                 if counter>15:

@@ -1,0 +1,73 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf600
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green116\blue0;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c45600\c0;\csgenericrgb\c100000\c100000\c100000;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 1.\
+send_encoded_img\
+Run on the Raspberry Pi, allows you to send a photo of choice to someone else using a LORA transmitter and the program \'93Serial\'94\
+\
+\
+2.\
+serial_to_txt_file\
+Takes raw Serial file and converts it into a text file \
+Make sure to save the Serial transmitted numbers as a text file\
+
+\b REMEMBER TO ADD A 0 TO THE VERY BEGINNING OF THE TEXT FILE, RIGHT BEFORE THE 300
+\b0 \
+\
+\pard\tx494\pardeftab494\pardirnatural\partightenfactor0
+
+\f1\fs20 \cf2 \cb3 USAGE: python serial_to_txt_file.py > decode.txt\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \cb1 Example output:\
+300\
+35\
+24\
+13\
+14\
+\'85..\
+\pard\tx494\pardeftab494\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+3.\
+format_serial.py\
+\pard\tx494\pardeftab494\pardirnatural\partightenfactor0
+
+\f1\fs20 \cf2 \cb3 #USAGE: python format_serial.py > edited.txt
+\f0\fs24 \cf0 \cb1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+In case some bits are dropped, this will add in dummy values and save it as a text file\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 Example output:\
+300\
+35\
+24\
+13\
+14\
+\'85..\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+4. 
+\b If bits were dropped
+\b0 \
+produce_image.py\
+is used to save an image called \'93recreation.png\'94\
+\
+\
+4. 
+\b If no bits were dropped
+\b0  (length of text file saved above as \'93edited.txt\'94 is 14460)\
+decode_bw_header_perfect_serial.py \
+can be used \
+to save an image called \'93recreation.png\'94\
+\
+\
+}

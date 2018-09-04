@@ -17,21 +17,14 @@
 
 ## but I changed it to make it more understandable to me.
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function 
-
-import argparse
-
-import numpy as np
-import tensorflow as tf
-
 print("initializing...")
 # Import packages
 import os
 import cv2
+import numpy as np
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+import tensorflow as tf
 import argparse
 import RPi.GPIO as GPIO
 import serial
@@ -107,51 +100,6 @@ label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
 categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
 category_index = label_map_util.create_category_index(categories)
 
-def load_graph(model_file):
-	graph = tf.Graph()
-	graph_def = tf.GraphDef()
-	
-	with open(model_file, "rb") as f:
-		graph_def.ParseFromString(f.read())
-	with graph.as_default():
-		tf.import_graph_def(graph_def)
-	return graph
-
-def read_tensor_from_image_file(file_name,
-				input_height=299,
-				input_width=299,
-				input_mean=0,
-				input_std=255):
-	input_name = "file_reader"
-	output_name = "normalized"
-	file_reader = tf.read_file(file_name, input_name)
-	if file_name.endswith(".png"):
-		image_reader = tf.image.decode_png(
-			file_reader, channels=3, name="png_reader")
-	elif file_name.endswith(".gif"):
-		image_reader = tf.squeeze(
-			tf.image.decode_gif(file_reader, name="gif_reader"))
-	elif file_name.endswith(".bmp"):
-		image_reader = tf.image.decode_bmp(file_reader, name="bmp reader")
-	else:
-                image_reader = tf.image.decode_jpeg(
-			file_reader, channels=3, name="jpeg_reader")
-	float_caster = tf.cast(image_reader, tf.float32)
-	dims_expander = tf.expand_dims(float_caster, 0)
-	resized = tf.image.resize_bilinear(dims_expander, [input_height, input_width])
-	normalized = tf.divide(tf.subtract(resized, [input_mean]), [input_std])
-	sess = tf.Session()
-	result = sess.run(normalized)
-
-	return result
-
-def load_labels(label_file):
-	label = []
-	proto_as_ascii_lines = tf.gfile.GFile(label_file).readlines()
-	for l in proto_as_ascii_lines:
-		label.append(l.rstrip())
-	return label
-
 print("loading Tensorflow model...")
 ser.write(b"loading Tensorflow model...")
 # Load the Tensorflow model into memory.
@@ -187,21 +135,6 @@ num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 frame_rate_calc = 1
 freq = cv2.getTickFrequency()
 font = cv2.FONT_HERSHEY_SIMPLEX
-
-# Initialize animal classification model
-print("loading animal classification model...")
-ser.write(b"loading animal classification model...")
-file_name = "temp.jpg"
-model_file = "./output_graph"
-label_file = "./output_labels/output_labels.txt"
-input_layer = "Placeholder"
-output_layer = "final_result"
-graph = load_graph(model_file)
-
-input_name = "import/" + input_layer
-output_name = "import/" + output_layer
-input_operation = graph.get_operation_by_name(input_name)
-output_operation = graph.get_operation_by_name(output_name)
 
 # Initialize camera and perform object detection.
 # The camera has to be set up and used differently depending on if it's a
@@ -252,10 +185,7 @@ try:
             GPIO.output(36,GPIO.HIGH)
             counter=0
             rawCapture.truncate(0)
-            camera.capture(file_name, quality=30) 
             for frame1 in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):
-                
-                camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'_human.jpg', quality=6)
                 counter=counter+1
                 print(counter)
                 t1 = cv2.getTickCount()
@@ -273,54 +203,18 @@ try:
                 threshold = 0.1
                 # Print detected objects and scores
                 objects=[]
-               
-                found_human = False
-                score = 0.0	
-                print("MS2")
                 for idx,value in enumerate(classes[0]):
                     object_name=(category_index.get(value)).get('name')
                     if scores[0,idx]>threshold and object_name=='person':
-                       	found_human = True 
-			#camera.capture('/home/pi/Desktop/saved-images/image%s.jpg' %counter, quality=6)
+                        #camera.capture('/home/pi/Desktop/saved-images/image%s.jpg' %counter, quality=6)
+                        camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'.jpg', quality=6)
                         print((category_index.get(value)).get('name'))
                         print(scores[0,idx])
-                        score = scores[0,idx]	
-                
-                print("MS3")
-                if found_human:
-                        camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'_human.jpg', quality=6)
-                        msg=b' person found @ '+time.strftime("%y%m%d_%H%M%S") + str(score) 
+                        msg=b' person found '
                         print('person found @ '+time.strftime("%y%m%d_%H%M%S"))
                         ser.write(msg)
-                else:
-                        t = read_tensor_from_image_file(
-                                file_name)
-                        print("MS3.5") 
-                        with tf.Session(graph=graph) as sess:
-                                 results = sess.run(output_operation.outputs[0], {
-                                         input_operation.outputs[0]: t
-                                 })
-                        results = np.squeeze(results)
-                        print("MS4")
-                        top_k = results.argsort()[-5:][::-1]
-                        labels = load_labels(label_file)
-                        cutoff_satisfied = False
-                        animal_name = ""
-                        max_likelihood = 0.0 
-                        for i in top_k:
-                               print(labels[i], results[i])
-                               if results[i] > max_likelihood:
-                                       max_likelihood = results[i]
-                                       animal_name = labels[i]	
-                               if results[i] > animal_cutoff:
-                                       cutoff_satisfied = True	
 
-                        if cutoff_satisfied:
-                                msg=b' animal found @ '+time.strftime("%y%m%d_%H%M%S") + str(score) + ' and it appears to be a ' + animal_name 
-                                camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'_'+animal_name+'.jpg', quality=6)
-                                ser.write(msg)	
-
-#                # Draw the results of the detection (aka 'visualize the results')
+#                # Draw the results of the detection (aka 'visulaize the results')
 #                vis_util.visualize_boxes_and_labels_on_image_array(
 #                    frame,
 #                    np.squeeze(boxes),
@@ -341,7 +235,7 @@ try:
 
                 rawCapture.truncate(0)
 
-                if counter>25:
+                if counter>15:
                     # turn off infrared lighting
                     GPIO.output(36,GPIO.LOW)
                     break

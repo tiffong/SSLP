@@ -1,5 +1,3 @@
-#USAGE: python i_bw.py > 'text.txt'
-
 from PIL import Image
 import numpy as np
 import RPi.GPIO as GPIO

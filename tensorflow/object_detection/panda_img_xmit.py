@@ -149,7 +149,7 @@ rawCapture.truncate(0)
 
 # set up the image classification so it will run faster later
 idx=0
-for frame1 in camera.capture_continuous(rawCapture, format="bgr", use_video_port=False):
+for frame1 in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     idx=idx+1
     frame = frame1.array
     frame.setflags(write=1)
@@ -163,6 +163,11 @@ rawCapture.truncate(0)
 
 # check starting time
 time0=time.time()
+# img xmit flags
+img_taken=0
+img_xmit=0
+img_xmitting=0
+img_done=0
 print("beginning PIR scan...")
 try:
     while True:
@@ -171,21 +176,18 @@ try:
         # check time
         time1=time.time()
         time_lapsed=time1-time0
-        # img xmit flags
-        img_taken=0
-        img_xmit=0
-        img_xmitting=0
-        img_done=0
 
-        if time_lapsed>1800:
+        if time_lapsed>10:#1800:
             time0=time1
+            print('img_taken '+str(img_taken))
             # if there are any images, start sending the latest one.
-            if img_taken:
+            if img_taken and img_xmitting != 1:
                 img_xmit=1
                 img_xmitting=1
                 # load latest image
                 all_imgs=os.listdir('/home/pi/Desktop/saved-images/')
                 img_to_send='/home/pi/Desktop/saved-images/'+all_imgs[-1]
+                print('img to send '+img_to_send)
                 # load latest image in packets and start sending
                 img=Image.open(img_to_send)
                 img=img.resize((160,90)) # resize for transmission
@@ -199,12 +201,13 @@ try:
                 iteration_sent=300
                 pixel_count=h*w
                 packet=1
-                for counter in range(0,int(size)):
+                for counter in range(1,int(size)):
                     row2=int(packet/w)
                     col2=packet%w
-                    data_buff=iteration_sent # the header of each packet sent
+                    data_buff[0]=iteration_sent # the header of each packet sent
                     data_buff[counter]=img_array[row2][col2]
                     ser.write(str(data_buff[counter]).encode())
+                print('sending packet '+str(packet))
                 iteration_sent=iteration_sent+1
                 packet=packet+1
 
@@ -213,16 +216,17 @@ try:
             for counter in range(0,int(size)):
                 row2=int(packet/w)
                 col=packet%w
-                data_buff=iteration_sent
+                data_buff[0]=iteration_sent
                 data_buff[counter]=img_array[row2][col2]
                 ser.write(str(data_buff[counter]).encode())
+            print('sending packet '+str(packet))
             iteration_sent=iteration_sent+1
             packet=packet+1
             if packet == pixel_count:
                 img_done=1
 
         # if image done sending
-        if pir_out!=1 and img_xmitting==1 and img_done==1:
+        if img_done==1:
             # reset variables
             img_xmitting=0
             img_done=0
@@ -231,7 +235,7 @@ try:
             GPIO.output(36,GPIO.HIGH)
             counter=0
             rawCapture.truncate(0)
-            for frame1 in camera.capture_continuous(rawCapture, format="bgr",use_video_port=False):
+            for frame1 in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):
                 counter=counter+1
                 print(counter)
                 t1 = cv2.getTickCount()
@@ -254,6 +258,7 @@ try:
                     if scores[0,idx]>threshold and object_name=='person':
                         camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'.jpg', quality=6)
                         img_taken=1
+                        print('img taken')
                         
                 t2 = cv2.getTickCount()
                 time1 = (t2-t1)/freq
@@ -261,7 +266,7 @@ try:
 
                 rawCapture.truncate(0)
 
-                if counter>10:
+                if counter>1:
                     # turn off infrared lighting
                     GPIO.output(36,GPIO.LOW)
                     break

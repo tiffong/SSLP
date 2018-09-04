@@ -9,7 +9,7 @@ from scipy.misc import imsave
 h=90 #gets height, 720
 w=160 #gets width, 1280
 
-with open('emtpy.txt', 'r') as z: 
+with open('dropped.txt', 'r') as z: 
 #with open('test2.txt', 'r') as f:
 	values = z.readlines() 
 	values = map(lambda s: s.strip(), values)  
@@ -34,7 +34,7 @@ missing = length/2
 #print(missing)
 
 #this is the actual corrupted file, with bytes missing
-with open('corrupted.txt', 'r') as f: 
+with open('serial_list.txt', 'r') as f: 
 #with open('test2.txt', 'r') as f:
 	values2 = f.readlines() 
 	values2 = map(lambda s: s.strip(), values2)  
@@ -112,8 +112,7 @@ for i in range(0,length2):  #for all packets that were sent
 
 #Save image onto desktop
 #TODO: get to save it as the time and date
-imsave('recreation.png', bw_values)
-
+imsave('Photos/recreation.png', bw_values)
 
 
 

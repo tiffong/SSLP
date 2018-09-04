@@ -15,7 +15,7 @@ np.set_printoptions(threshold = 'nan')
 packet_size = 241
 
 #OPEN TEXT FILE HERE
-with open('decode.txt', 'r') as f: 
+with open('serial_list.txt', 'r') as f: 
 #with open('test2.txt', 'r') as f:
     raw_img = f.readlines() 
     shape = np.shape(raw_img)

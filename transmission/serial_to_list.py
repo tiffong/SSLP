@@ -1,5 +1,4 @@
 #used to formal text block received from Serial transmission from RPI
-#text block should have all headers
 
 #USAGE: python serial_to_txt_file.py > decode.txt
 
@@ -8,7 +7,7 @@
 from decimal import Decimal
 import numpy as np
 
-with open('corrupted_serial.txt', 'r') as f: 
+with open('Serial.txt', 'r') as f: 
 #with open('test2.txt', 'r') as f:
 	raw_img = f.readlines() 
 	array = raw_img[0].split(".") #split by decimal

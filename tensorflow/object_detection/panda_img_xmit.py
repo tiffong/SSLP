@@ -177,9 +177,8 @@ try:
         time1=time.time()
         time_lapsed=time1-time0
 
-        if time_lapsed>10:#1800:
+        if time_lapsed>1800:
             time0=time1
-            print('img_taken '+str(img_taken))
             # if there are any images, start sending the latest one.
             if img_taken and img_xmitting != 1:
                 img_xmit=1
@@ -187,7 +186,6 @@ try:
                 # load latest image
                 all_imgs=os.listdir('/home/pi/Desktop/saved-images/')
                 img_to_send='/home/pi/Desktop/saved-images/'+all_imgs[-1]
-                print('img to send '+img_to_send)
                 # load latest image in packets and start sending
                 img=Image.open(img_to_send)
                 img=img.resize((160,90)) # resize for transmission
@@ -207,7 +205,7 @@ try:
                     data_buff[0]=iteration_sent # the header of each packet sent
                     data_buff[counter]=img_array[row2][col2]
                     ser.write(str(data_buff[counter]).encode())
-                print('sending packet '+str(packet))
+                ('sending packet '+str(packet))
                 iteration_sent=iteration_sent+1
                 packet=packet+1
 
@@ -219,7 +217,6 @@ try:
                 data_buff[0]=iteration_sent
                 data_buff[counter]=img_array[row2][col2]
                 ser.write(str(data_buff[counter]).encode())
-            print('sending packet '+str(packet))
             iteration_sent=iteration_sent+1
             packet=packet+1
             if packet == pixel_count:
@@ -258,7 +255,7 @@ try:
                     if scores[0,idx]>threshold and object_name=='person':
                         camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'.jpg', quality=6)
                         img_taken=1
-                        print('img taken')
+                        print('person found')
                         
                 t2 = cv2.getTickCount()
                 time1 = (t2-t1)/freq
@@ -266,7 +263,7 @@ try:
 
                 rawCapture.truncate(0)
 
-                if counter>1:
+                if counter>5:
                     # turn off infrared lighting
                     GPIO.output(36,GPIO.LOW)
                     break

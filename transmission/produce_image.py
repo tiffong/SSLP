@@ -4,6 +4,9 @@
 
 import numpy as np
 from scipy.misc import imsave
+import datetime
+import time
+
 #these are the header numbers and num of bytes missing
 
 h=90 #gets height, 720
@@ -112,7 +115,10 @@ for i in range(0,length2):  #for all packets that were sent
 
 #Save image onto desktop
 #TODO: get to save it as the time and date
-imsave('Photos/recreation.png', bw_values)
+
+date = datetime.datetime.now().strftime("%m_%d_%Y_%H_%M_%S") + '.png'
+imsave(date, bw_values)
+
 
 
 

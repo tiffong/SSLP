@@ -21,13 +21,18 @@ File > Save Text As > Save\
 Note: Make sure to save the text file in the same directory as the code. \
 \
 
-\b BE SURE TO ADD A \'910\'92 TO THE VERY BEGINNING OF THE TEXT FILE, RIGHT BEFORE THE 300, or else the next code will not work. Therefore the first number in this file will be 0300. Then save the text file.
+\b BE SURE TO ADD A \'910\'92 TO THE VERY BEGINNING OF THE TEXT FILE, RIGHT BEFORE THE 300, or else the next code will not work. Therefore the first number in this file will be 0300. Then save the text file.\
+
 \b0 \
 \
-The beginning of Serial.txt should look similar this: 0300.043.045.045.044.\
+The beginning of Serial.txt should look similar this: \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screen Shot 2018-09-04 at 4.08.55 PM.png \width3140 \height700 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+The 0 is highlighted above to emphasize that it needs to be added\
 \pard\tx494\pardeftab494\pardirnatural\partightenfactor0
 \cf0 \
-\
 2. Create a a folder on your Desktop called \'93Transmission.\'94\
 Into the folder, copy the files:\
 	1. Serial.txt\
@@ -48,14 +53,14 @@ Into the folder, copy the files:\
 		5. run.py\
 		6. Photos	\
 \
-3.  Open Terminal (can be found with Search bar, see icon below) \
+4.  Open Terminal (can be found with Search bar, see icon below) \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0 {{\NeXTGraphic Screen Shot 2018-09-04 at 3.08.38 PM.png \width920 \height860 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬} (This is what Terminal looks like. Every Mac should have it)\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0 \
 \pard\tx494\pardeftab494\pardirnatural\partightenfactor0
-\cf0 4.
+\cf0 5.
 \b  While in Terminal, type the following
 \b0 : 
 \f1\fs26 \cf2 \cb3 cd Desktop/Transmission\
@@ -64,20 +69,22 @@ Into the folder, copy the files:\
 \b0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0 \
-3.\
+6.\
 
 \b While in Terminal, type the following:
-\b0 \
-\pard\tx494\pardeftab494\pardirnatural\partightenfactor0
-
+\b0  
 \f1\fs26 \cf2 \cb3 python run.py
 \f0\fs24 \cf0 \cb1 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\b \cf0 Then press Enter.\
+\b Then press Enter.\
 
-\b0\fs28 \
-5. \
-Finished!! You should have an image in the Transmission folder named with the timestamp of when the photo was downloaded. Make sure to 
+\b0\fs22 Note: This will add two new files to the folder called \'93dropped.txt\'94 and \'93serial_list.txt\'94. This is normal. You can leave them in the folder.
+\fs28 \
+\
+7. \
+
+\fs24 Finished!! You should have an image in the Transmission folder named with the timestamp of when the photo was downloaded. The format of the photo\'92s title is: \
+	Month_Day_Year_Time.png\
+ Make sure to 
 \b  move it to the Photos folder
-\b0  for easy organization.}
+\b0  you created earlier for easy organization.}

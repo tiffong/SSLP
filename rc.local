@@ -1,0 +1,26 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+# Print the IP address
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+export PATH="$PATH:/home/pi:/home/pi/tensorflow_home/models/research:/home/pi/tensorflow_home/models/research/slim:/usr/lib/python35.zip:/usr/lib/python3.5:/usr/lib/python3.5/plat-arm-linux-gnueabihf:/usr/lib/python3.5/lib-dynload:/home/pi/.local/lib/python3.5/site-packages:/usr/local/lib/python3.5/dist-packages:/usr/local/lib/python3.5/dist-packages/protobuf-3.5.1-py3.5-linux-armv7l.egg:/usr/lib/python3/dist-packages:/home/pi/Desktop/SSLP/tensorflow/object_detection/utils:DIR"
+
+#sudo python3 /home/pi/Desktop/lora_txdrxd.py &
+cd /home/pi/Desktop/SSLP/tensorflow/object_detection
+#sudo -H -u pi python3 /home/pi/Desktop/SSLP/tensorflow/object_detection/panda.py & > /home/pi/Desktop/log.txt 2>&1
+
+exit 0

@@ -210,7 +210,7 @@ try:
                         camera.capture('/home/pi/Desktop/saved-images/'+time.strftime("%y%m%d_%H%M%S")+'.jpg', quality=6)
                         print((category_index.get(value)).get('name'))
                         print(scores[0,idx])
-                        msg=b' person found '
+                        msg=(' person found @ '+time.strftime("%y%m%d_%H%M%S")+'with certainty score of '+str(scores[0,idx])).encode()
                         print('person found @ '+time.strftime("%y%m%d_%H%M%S"))
                         ser.write(msg)
 
